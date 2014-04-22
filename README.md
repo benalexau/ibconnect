@@ -89,7 +89,7 @@ Design Overview
 | [ibcd](ibcd/)       | Package ``main`` contains the IB Connect daemon           |
 | [server](server/)   | Package ``server`` offers a REST API for Postgres data    |
 
-In general, loading ```ibcd`` will cause the gateway system to load if it isn't
+In general, loading ``ibcd`` will cause the gateway system to load if it isn't
 already running in the cluster. The gateway will refresh its data on request
 from the REST server tier (usually by a REST request with ``max-age=0``) or
 automatically if (i) the gateway just started, (ii) a time indicated by one of
