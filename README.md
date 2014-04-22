@@ -64,7 +64,7 @@ REST Endpoints
 --------------
 
 A HTTP GET of ``http://yourserver:3000/v1/accounts`` will return a JSON list of
-all accounts ever found in any IB Gateway instances. You can include a
+all accounts ever found in any IB Gateway instance. You can include a
 ``Cache-Control`` header of ``max-age=0`` to force a refresh of the IB Gateway
 backend.
 
@@ -126,7 +126,7 @@ exit
 ```
 
 IB Connect manages schemas via [Goose](https://bitbucket.org/liamstask/goose).
-Note the Goose [db/dbconf.yml](dbconf.yml) declares a single ``db`` environment
+Note the Goose [db/dbconf.yml](db/dbconf.yml) declares a single ``db`` environment
 that expects the ``DB_URL`` to have been set. There shouldn't be any need to
 edit the ``dbconf.yml`` between development and production, which is a goal of
 the [Twelve-Factor Methodology](http://12factor.net/). Use these commands to
@@ -142,7 +142,7 @@ Production
 ----------
 If you're running IB Connect in production, you may wish to consider:
 
-1. [IBController](sourceforge.net/projects/ibcontroller/) can manage your
+1. [IBController](http://sourceforge.net/projects/ibcontroller/) can manage your
    IB Gateway instance(s).
 2. Postgres has numerous high availability capabilities. The best choice will
    depend on your particular environment's configuration and reliability needs.
@@ -153,7 +153,7 @@ Tests require the ``IB_GW`` endpoint to be running a financial advisor account.
 The test server directory provides a suitable IB Gateway testing endpoint (see
 the [test server instructions](testserver/README.md) for details).
 
-The following shell script uses ``goose`` to bring the database back to an
+The following shell command uses ``goose`` to bring the database back to an
 empty state, apply all migrations, run the tests and report test coverage
 on the console and in a web browser for convenient visual inspection:
 
