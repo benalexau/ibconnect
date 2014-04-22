@@ -1,5 +1,7 @@
-IB Connect
-==========
+[![Build Status](https://drone.io/github.com/benalexau/ibconnect/status.png)](https://drone.io/github.com/benalexau/ibconnect/latest)
+[![GoDoc](https://godoc.org/github.com/benalexau/ibconnect?status.png)](https://godoc.org/github.com/benalexau/ibconnect)
+[![Coverage Status](https://coveralls.io/repos/benalexau/ibconnect/badge.png?branch=master)](https://coveralls.io/r/benalexau/ibconnect?branch=master)
+
 IB Connect is a HTTP service that provides a durable, long-term history of
 [Interactive Brokers](https://www.interactivebrokers.com) account performance.
 
