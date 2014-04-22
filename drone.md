@@ -4,6 +4,8 @@ Drone Config
 You can setup free CI and code coverage tracking via [Drone](http://drone.io)
 and [Coveralls](http://coveralls.io).
 
+Ensure you tick the "Postgres" database option in Drone.
+
 To integrate between Drone and Coveralls, note down the private "repo token"
 assigned to your Coveralls project. Then adjust your Drone settings as shown
 below.
