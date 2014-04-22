@@ -1,3 +1,4 @@
+/*
 Package core provides types and values shared between IB Connect packages.
 
 A given IB Connect cluster shares a common Postgres database. That Postgres
