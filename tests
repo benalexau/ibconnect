@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo "DB: $DB_URL"
 export DB_URL
 while goose -env db down; do
   sleep 0.1
@@ -23,5 +22,10 @@ fi
 
 echo "mode: count">all.cover
 grep -h -v "mode: count" cover/*.cover >> all.cover
+
+if [ "CI" != ""  ]; then
+  exit 0
+fi
+
 go tool cover -func=all.cover|sort -rnk 3|sed 's/.*\/ibconnect\///g'|sed 's/\t/ /g'
 go tool cover -html=all.cover
