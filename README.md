@@ -101,6 +101,13 @@ business logic indicates it's appropriate to do so.
 
 Send a SIGTERM to the ``idbc`` process to exit (or just press C-c).
 
+If IB Connect is configured to connect to multiple gateways, you might see some
+occasional foreign key violation errors reported on stdout. In such cases IB
+Connect will immediately reload the failed gateway feeds and retry, meaning such
+messages can be ignored. A more complex solution involving a shared DAO
+singleton across gateways was considered, but the increased design complexity
+wasn't considered desirable when the present "fail fast and reload" model works.
+
 Prerequisites
 -------------
 As indicated by the environment variables, you need to run IB Gateway and a
