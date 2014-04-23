@@ -2,6 +2,7 @@ package gateway
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -88,29 +89,33 @@ func (a *AccountFeed) processResults() error {
 	var err error
 	a.tx, err = a.fc.DB.Begin()
 	if err != nil {
-		return err
+		return fmt.Errorf("gateway: account_feed begin TX: %v", err)
 	}
 
 	err = a.amount()
 	if err != nil {
 		a.tx.Rollback()
+		return fmt.Errorf("gateway: account_feed amount: %v", err)
 		return err
 	}
 
 	err = a.position()
 	if err != nil {
 		a.tx.Rollback()
+		return fmt.Errorf("gateway: account_feed position: %v", err)
 		return err
 	}
 
 	err = a.store()
 	if err != nil {
 		a.tx.Rollback()
+		return fmt.Errorf("gateway: account_feed store: %v", err)
 		return err
 	}
 
 	err = a.tx.Commit()
 	if err != nil {
+		return fmt.Errorf("gateway: account_feed commit TX: %v", err)
 		return err
 	}
 
@@ -122,17 +127,21 @@ func (a *AccountFeed) amount() error {
 	for key, value := range a.pam.Values() {
 		snapshot, err := a.getSnapshot(key.AccountCode)
 		if err != nil {
-			return err
+			return fmt.Errorf("get snapshot %v", err)
 		}
 
 		amt := a.amounts[snapshot]
 		amt.AccountSnapshotId = snapshot.Id
 
+		if value.Currency == "BASE" {
+			continue
+		}
+
 		switch key.Key {
 		case "AccountType":
 			val, err := a.getAccountType(value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("account type %v", err)
 			}
 			amt.AccountType = val.Id
 		case "Cushion":
@@ -150,115 +159,115 @@ func (a *AccountFeed) amount() error {
 		case "AccruedCash":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("AccruedCash %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.AccruedCash = val
 		case "AvailableFunds":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("AvailableFunds %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.AvailableFunds = val
 		case "BuyingPower":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("BuyingPower %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.BuyingPower = val
 		case "EquityWithLoanValue":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("EquityWithLoanValue %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.EquityWithLoanValue = val
 		case "ExcessLiquidity":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("ExcessLiquidity %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.ExcessLiquidity = val
 		case "FullAvailableFunds":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("FullAvailableFunds %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.FullAvailableFunds = val
 		case "FullExcessLiquidity":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("FullExcessLiquidity %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.FullExcessLiquidity = val
 		case "FullInitMarginReq":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("FullInitMarginReq %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.FullInitMarginReq = val
 		case "FullMaintMarginReq":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("FullMaintMarginReq %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.FullMaintMarginReq = val
 		case "GrossPositionValue":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("GrossPositionValue %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.GrossPositionValue = val
 		case "InitMarginReq":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("InitMarginReq %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.InitMarginReq = val
 		case "LookAheadAvailableFunds":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("LookAheadAvailableFunds %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.LookAheadAvailableFunds = val
 		case "LookAheadExcessLiquidity":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("LookAheadExcessLiquidity %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.LookAheadExcessLiquidity = val
 		case "LookAheadInitMarginReq":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("LookAheadInitMarginReq %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.LookAheadInitMarginReq = val
 		case "LookAheadMaintMarginReq":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("LookAheadMaintMarginReq %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.LookAheadMaintMarginReq = val
 		case "MaintMarginReq":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("MaintMarginReq %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.MaintMarginReq = val
 		case "NetLiquidation":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("NetLiquidation %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.NetLiquidation = val
 		case "TotalCashBalance":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("TotalCashBalance %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.TotalCashValue = val
 		case "TotalCashValue":
 			val, err := core.NewMonetary(a.tx, value.Currency, value.Value)
 			if err != nil {
-				return err
+				return fmt.Errorf("TotalCashValue %s %s %v", value.Currency, value.Value, err)
 			}
 			amt.TotalCashValue = val
 		default:
