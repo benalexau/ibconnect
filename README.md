@@ -112,20 +112,12 @@ machine in order to match the default environment variable noted above.
 To install Postgres on Arch Linux:
 
 ```
-sudo pacman -S postgres
+sudo pacman -S postgresql
 sudo systemctl enable postgresql
 sudo systemctl start postgresql
-```
-
-To create a Postgres user and database:
-
-```
-sudo su postgres
-cd ~
-psql -c "CREATE USER ibc_dev;"
-psql -c "CREATE DATABASE ibc_dev OWNER ibc_dev;"
-psql ibc_dev -c "ALTER SCHEMA public OWNER TO ibc_dev;"
-exit
+psql -U postgres -c "CREATE USER ibc_dev;"
+psql -U postgres -c "CREATE DATABASE ibc_dev OWNER ibc_dev;"
+psql -U postgres ibc_dev -c "ALTER SCHEMA public OWNER TO ibc_dev;"
 ```
 
 IB Connect manages schemas via [Goose](https://bitbucket.org/liamstask/goose).
