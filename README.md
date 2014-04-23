@@ -71,7 +71,8 @@ all accounts ever found in any IB Gateway instance. You can include a
 backend.
 
 You can HTTP GET ``http://yourserver:3000/v1/accounts/ACCTNO`` to receive a
-HTTP status 303 redirect to the latest report URL for that account number.
+HTTP status 303 redirect to the latest report URL for that account number. Don't
+forget to use ``curl -L`` to follow redirects if using the command line.
 
 Finally, all historical reports are available under the HTTP GET URL format
 ``http://yourserver:3000/v1/accounts/ACCTNO/RFC3339NANO``. For example,
