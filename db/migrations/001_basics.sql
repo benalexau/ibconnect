@@ -22,6 +22,13 @@ CREATE TABLE iso_4217 (
     currency VARCHAR(100) NOT NULL
 );
 
+-- monetary_human makes a monetary into a value a human would prefer to read.
+CREATE FUNCTION monetary_human(monetary) RETURNS VARCHAR AS $$
+        SELECT alphabetic_code||' '||(ROUND(CAST($1.amount/power(10,minor_unit) AS NUMERIC), CAST(minor_unit AS INT)))
+        FROM iso_4217
+        WHERE iso_4217_code = $1.iso_4217_code
+    $$ LANGUAGE SQL;
+
 CREATE TABLE account_type (
     id BIGSERIAL PRIMARY KEY,
     type_desc VARCHAR(100) NOT NULL UNIQUE
@@ -76,6 +83,36 @@ CREATE TABLE account_amount (
     total_cash_balance monetary NOT NULL,
     total_cash_value monetary NOT NULL,
     UNIQUE(account_snapshot_id)
+);
+
+CREATE VIEW v_account_amount AS (
+    SELECT
+        account_snapshot_id,
+	type_desc AS account_type,
+        cushion,
+        look_ahead_next_change,
+        monetary_human(accrued_cash) AS accrued_cash,
+        monetary_human(available_funds) AS available_funds,
+        monetary_human(buying_power) AS buying_power,
+        monetary_human(equity_with_loan_value) AS equity_with_loan_value,
+        monetary_human(excess_liquidity) AS excess_liquidity,
+        monetary_human(full_available_funds) AS full_available_funds,
+        monetary_human(full_excess_liquidity) AS full_excess_liquidity,
+        monetary_human(full_init_margin_req) AS full_init_margin_req,
+        monetary_human(full_maint_margin_req) AS full_maint_margin_req,
+        monetary_human(gross_position_value) AS gross_position_value,
+        monetary_human(init_margin_req) AS init_margin_req,
+        monetary_human(look_ahead_available_funds) AS look_ahead_available_funds,
+        monetary_human(look_ahead_excess_liquidity) AS look_ahead_excess_liquidity,
+        monetary_human(look_ahead_init_margin_req) AS look_ahead_init_margin_req,
+        monetary_human(look_ahead_maint_margin_req) AS look_ahead_maint_margin_req,
+        monetary_human(maint_margin_req) AS maint_margin_req,
+        monetary_human(net_liquidation) AS net_liquidation,
+        monetary_human(total_cash_balance) AS total_cash_balance,
+        monetary_human(total_cash_value) AS total_cash_value
+    FROM
+        account_amount, account_type
+    WHERE account_type.id = account_type_id
 );
 
 CREATE TABLE security_type (
@@ -158,6 +195,7 @@ CREATE VIEW v_account_position AS (
     ORDER BY market_value
 );
 
+INSERT INTO iso_4217 VALUES (000, 0, 'NIL', 'Nil Value');
 INSERT INTO iso_4217 VALUES (008, 2, 'ALL', 'Lek');
 INSERT INTO iso_4217 VALUES (012, 2, 'DZD', 'Algerian Dinar');
 INSERT INTO iso_4217 VALUES (032, 2, 'ARS', 'Argentine Peso');
@@ -333,10 +371,12 @@ DROP TABLE contract;
 DROP TABLE exchange;
 DROP TABLE symbol;
 DROP TABLE security_type;
+DROP VIEW v_account_amount;
 DROP TABLE account_amount;
 DROP VIEW v_account_snapshot_latest;
 DROP TABLE account_snapshot;
 DROP TABLE account;
 DROP TABLE account_type;
+DROP FUNCTION monetary_human(monetary);
 DROP TABLE iso_4217;
 DROP TYPE monetary;

@@ -78,8 +78,6 @@ Finally, all historical reports are available under the HTTP GET URL format
 ``http://yourserver:3000/v1/accounts/ACCTNO/RFC3339NANO``. For example,
 ``http://yourserver:3000/v1/accounts/U12345678/2014-04-22T04:22:05.776394Z``.
 The returned JSON contains sections for the account balances and portfolio. 
-The account balances are formatted without currency minor unit separators (in
-other words, dollar amounts are displayed in cents).
 
 Design Overview
 ---------------

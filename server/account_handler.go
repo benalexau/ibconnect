@@ -18,7 +18,7 @@ type AccountHandler struct {
 }
 
 type AccountReport struct {
-	Balance   core.AccountAmount
+	Balance   core.AccountAmountView
 	Positions []*core.AccountPositionView
 }
 
@@ -84,7 +84,7 @@ func (a *AccountHandler) GetReport(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	err = meddler.QueryRow(a.db, &report.Balance, "SELECT * FROM account_amount WHERE account_snapshot_id = $1", snap.Id)
+	err = meddler.QueryRow(a.db, &report.Balance, "SELECT * FROM v_account_amount WHERE account_snapshot_id = $1", snap.Id)
 	if err != nil {
 		a.u.HandleError(err, w, r)
 		return

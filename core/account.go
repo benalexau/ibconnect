@@ -24,9 +24,9 @@ type AccountSnapshotLatest struct {
 }
 
 type AccountAmount struct {
-	Id                       int64    `meddler:"id,pk" json:"-"`
-	AccountSnapshotId        int64    `meddler:"account_snapshot_id" json:"-"`
-	AccountType              int64    `meddler:"account_type_id" json:"-"`
+	Id                       int64    `meddler:"id,pk"`
+	AccountSnapshotId        int64    `meddler:"account_snapshot_id"`
+	AccountType              int64    `meddler:"account_type_id"`
 	Cushion                  float64  `meddler:"cushion"`
 	LookAheadNextChange      int16    `meddler:"look_ahead_next_change"`
 	AccruedCash              Monetary `meddler:"accrued_cash,monetary"`
@@ -48,6 +48,32 @@ type AccountAmount struct {
 	NetLiquidation           Monetary `meddler:"net_liquidation,monetary"`
 	TotalCashBalance         Monetary `meddler:"total_cash_balance,monetary"`
 	TotalCashValue           Monetary `meddler:"total_cash_value,monetary"`
+}
+
+type AccountAmountView struct {
+	AccountSnapshotId        int64   `meddler:"account_snapshot_id,pk" json:"-"`
+	AccountType              string  `meddler:"account_type"`
+	Cushion                  float64 `meddler:"cushion"`
+	LookAheadNextChange      int16   `meddler:"look_ahead_next_change"`
+	AccruedCash              string  `meddler:"accrued_cash"`
+	AvailableFunds           string  `meddler:"available_funds"`
+	BuyingPower              string  `meddler:"buying_power"`
+	EquityWithLoanValue      string  `meddler:"excess_liquidity"`
+	ExcessLiquidity          string  `meddler:"equity_with_loan_value"`
+	FullAvailableFunds       string  `meddler:"full_available_funds"`
+	FullExcessLiquidity      string  `meddler:"full_excess_liquidity"`
+	FullInitMarginReq        string  `meddler:"full_init_margin_req"`
+	FullMaintMarginReq       string  `meddler:"full_maint_margin_req"`
+	GrossPositionValue       string  `meddler:"gross_position_value"`
+	InitMarginReq            string  `meddler:"init_margin_req"`
+	LookAheadAvailableFunds  string  `meddler:"look_ahead_available_funds"`
+	LookAheadExcessLiquidity string  `meddler:"look_ahead_excess_liquidity"`
+	LookAheadInitMarginReq   string  `meddler:"look_ahead_init_margin_req"`
+	LookAheadMaintMarginReq  string  `meddler:"look_ahead_maint_margin_req"`
+	MaintMarginReq           string  `meddler:"maint_margin_req"`
+	NetLiquidation           string  `meddler:"net_liquidation"`
+	TotalCashBalance         string  `meddler:"total_cash_balance"`
+	TotalCashValue           string  `meddler:"total_cash_value"`
 }
 
 type SecurityType struct {
