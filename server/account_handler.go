@@ -18,8 +18,10 @@ type AccountHandler struct {
 }
 
 type AccountReport struct {
-	Balance   core.AccountAmountView
-	Positions []*core.AccountPositionView
+	AccountCode string
+	Timestamp   string
+	Balance     core.AccountAmountView
+	Positions   []*core.AccountPositionView
 }
 
 func (a *AccountHandler) GetAll(w rest.ResponseWriter, r *rest.Request) {
@@ -55,16 +57,17 @@ func (a *AccountHandler) GetLatest(w rest.ResponseWriter, r *rest.Request) {
 }
 
 func (a *AccountHandler) GetReport(w rest.ResponseWriter, r *rest.Request) {
-	code := r.PathParam("accountCode")
-	timestamp := r.PathParam("timestamp")
+	var report AccountReport
+	report.AccountCode = r.PathParam("accountCode")
+	report.Timestamp = r.PathParam("timestamp")
 	existing := new(core.Account)
-	err := meddler.QueryRow(a.db, existing, "SELECT * FROM account WHERE account_code = $1", code)
+	err := meddler.QueryRow(a.db, existing, "SELECT * FROM account WHERE account_code = $1", report.AccountCode)
 	if err != nil {
 		a.u.HandleError(err, w, r)
 		return
 	}
 
-	created, err := time.Parse(time.RFC3339Nano, timestamp)
+	created, err := time.Parse(time.RFC3339Nano, report.Timestamp)
 	if err != nil {
 		a.u.HandleError(err, w, r)
 		return
@@ -77,7 +80,6 @@ func (a *AccountHandler) GetReport(w rest.ResponseWriter, r *rest.Request) {
 		return
 	}
 
-	var report AccountReport
 	err = meddler.QueryAll(a.db, &report.Positions, "SELECT * FROM v_account_position WHERE account_snapshot_id = $1", snap.Id)
 	if err != nil {
 		a.u.HandleError(err, w, r)
