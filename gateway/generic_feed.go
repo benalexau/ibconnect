@@ -55,10 +55,10 @@ func (a *GenericFeed) init() {
 	refreshTermination := make(chan struct{})
 	go func() {
 		a.refreshChan <- true
-		now := time.Now().UTC()
-		nextTime := a.cronRefresh.Next(now)
-		durationUntil := nextTime.Sub(now)
 		for {
+			now := time.Now().UTC()
+			nextTime := a.cronRefresh.Next(now)
+			durationUntil := nextTime.Sub(now)
 			select {
 			case <-refreshTermination:
 				return
