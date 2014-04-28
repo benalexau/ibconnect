@@ -52,7 +52,7 @@ func (a *GenericFeed) Close() {
 
 // Init starts the goroutines that performs the work of this Feed instance.
 func (a *GenericFeed) init() {
-	refreshTermination := make(chan struct{})
+	terminating := make(chan struct{})
 	go func() {
 		a.refreshChan <- true
 		for {
@@ -60,7 +60,7 @@ func (a *GenericFeed) init() {
 			nextTime := a.cronRefresh.Next(now)
 			durationUntil := nextTime.Sub(now)
 			select {
-			case <-refreshTermination:
+			case <-terminating:
 				return
 			case <-time.After(durationUntil):
 				a.refreshChan <- true
@@ -68,19 +68,14 @@ func (a *GenericFeed) init() {
 		}
 	}()
 
+	notifyChan := make(chan *core.Notification)
 	go func() {
-		notifyChan := make(chan *core.Notification)
 		a.ctx.N.Subscribe(notifyChan)
 		defer a.ctx.N.Unsubscribe(notifyChan)
 		for {
 			select {
-			case <-a.terminated:
+			case <-terminating:
 				return
-			case <-a.exit:
-				close(refreshTermination)
-				close(a.terminated)
-			case <-a.refreshChan:
-				a.callback(a.ctx)
 			case notification, ok := <-notifyChan:
 				if !ok {
 					err := errors.New("notification system stopped")
@@ -89,9 +84,23 @@ func (a *GenericFeed) init() {
 				}
 				for _, interested := range a.notifications {
 					if interested == notification.Type {
-						a.callback(a.ctx)
+						a.refreshChan <- true
 					}
 				}
+			}
+		}
+	}()
+
+	go func() {
+		for {
+			select {
+			case <-a.terminated:
+				return
+			case <-a.exit:
+				close(terminating)
+				close(a.terminated)
+			case <-a.refreshChan:
+				a.callback(a.ctx)
 			}
 		}
 	}()
