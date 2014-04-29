@@ -1,7 +1,7 @@
 TestServer
 ==========
 
-The files in this directory are not part of IB Connect, but they will help you test it.
+The files in this directory are not part of GoIB, but they will help you test it.
 
 * [Trader Workstation](http://www.interactivebrokers.com/en/pagemap/pagemap_APISolutions.php)
   (contained in file ``unixmacosx-*.jar``) is the official, unmodified
@@ -14,7 +14,7 @@ The files in this directory are not part of IB Connect, but they will help you t
 
 The ``ibcontroller-*.ini`` has been configured to automatically load IB
 Gateway and login with Interactive Brokers' ``fdemo`` account. This is adequate
-for most IB Connect tests. Two ports are bound:
+for most GoIB tests. Two ports are bound:
 
 * 4002 is the IB API port. This is what the tests will use. Note that this is
   not the default 4001 port. This is an intentional change to reduce the risk of
@@ -32,5 +32,5 @@ To cleanly terminate the server via IBController, use ``ibgwstop``.
 Note that IB Gateway will connect to actual IB backends, and these backends are
 regularly reset at fixed times each day, cycle through demo accounts, apply rate
 limits and occasionally timeout. Test failures are frequently related to these
-conditions as opposed to errors in the IB Connect application. If you receive a
+conditions as opposed to errors in the GoIB trading library. If you receive a
 test failure, try re-running the test suite later.
