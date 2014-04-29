@@ -142,7 +142,7 @@ Production
 ----------
 If you're running IB Connect in production, you may wish to consider:
 
-1. [IBController](http://sourceforge.net/projects/ibcontroller/) can manage your
+1. [IBController](https://github.com/ib-controller/ib-controller) can manage your
    IB Gateway instance(s).
 2. Postgres has numerous high availability capabilities. The best choice will
    depend on your particular environment's configuration and reliability needs.
