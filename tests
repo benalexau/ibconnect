@@ -23,7 +23,7 @@ fi
 echo "mode: count">all.cover
 grep -h -v "mode: count" cover/*.cover >> all.cover
 
-if [ "CI" == "true"  ]; then
+if [ "$CI" == "true"  ]; then
   exit 0
 fi
 
