@@ -53,7 +53,7 @@ func (a *AccountFeed) callback(ctx *FeedContext) {
 
 	defer pam.Close()
 	var m ib.Manager = pam
-	_, err = ib.SinkManager(&m, 60*time.Second, 1)
+	_, err = ib.SinkManager(m, 60*time.Second, 1)
 	if err != nil {
 		ctx.Errors <- FeedError{err, a}
 		return
@@ -289,7 +289,7 @@ func (a *AccountFeed) position() error {
 		newPosition.AccountSnapshotId = snapshot.Id
 
 		c := new(core.Contract)
-		c.IbContractId = value.Contract.ContractId
+		c.IbContractId = value.Contract.ContractID
 
 		iso := new(core.Iso4217)
 		err = meddler.QueryRow(a.tx, iso, "SELECT * FROM iso_4217 WHERE alphabetic_code = $1", value.Contract.Currency)
